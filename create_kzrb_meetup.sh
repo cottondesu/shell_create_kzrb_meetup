@@ -1,17 +1,35 @@
 #!/bin/bash
-#第一引数 meetup番号
-number=$1
-#第二引数 1:meetup 1以外:report
-mode=$2
 
-CMDNAME=`basename $0`
+#モード選択
+while :
+do
+  echo "以下のどちらかを選択してください。1 or 2"
+  echo "1)meetup 2)report"
+  read mode
+  case "$mode" in
+    "1") 
+        echo "1)meetup を選択しました。"
+        break ;;
+    "2") 
+        echo "2)report を選択しました。"
+        break ;;
+  esac
+done
 
-#引数 必須チェック
-if [ $# -ne 2 ]
+#meetup番号入力
+while :
+do
+  echo "meetup番号を入力してください。"
+  read number
+  expr "$number" + 1 >/dev/null 2>&1
+  if [ $? -lt 2 ]
   then
-    echo "Usage: $CMDNAME <meetup番号> <1:meetup 1以外:report>"
-    exit 1
-fi
+    echo "$number を入力しました。"
+    break
+  else
+    echo "数値以外が入力されています。数値を入力してください。"
+  fi
+done
 
 rm -rf meetup/
 
@@ -28,12 +46,6 @@ cd meetup/
 
 bundle install --path vendor/bundle --binstubs .bundle/bin --without livereload
 
-#meetup番号フォルダ存在チェック
-if [ ! -e $number ]
-  then
-    mkdir $number
-fi
-
 #モードチェック
 if [ $mode -eq 1 ]
   then
@@ -43,3 +55,30 @@ if [ $mode -eq 1 ]
 fi
 
 git checkout -b $brname
+
+#meetup番号フォルダ存在チェック
+if [ ! -e $number ]
+  then
+    mkdir $number
+    echo "$number フォルダを作成しました。"
+fi
+
+cd $number
+
+#mode別の空ファイル作成
+case "$mode" in
+  "1") 
+      if [ ! -e index.md ]
+        then
+          touch index.md
+          echo "空の index.md を作成しました。"
+      fi
+      break ;;
+  "2") 
+      if [ ! -e report.md ]
+        then
+          touch report.md
+          echo "空の report.md を作成しました。"
+      fi
+      break ;;
+esac
