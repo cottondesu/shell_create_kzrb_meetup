@@ -4,25 +4,15 @@ create_kzrb_meetup.sh
   
 [kanazawa.rb](http://kzrb.org/meetup/)
   
-シェルの動作は以下の通りです。  
+シェルの動作は以下の通りです。
+ * mode【1)meetup 2)report】の選択する。  
+ * meetup番号の入力をする。  
  * 実行時のカレントフォルダ内のmeetupフォルダを削除する。  
  * kanazawa.rbのmeetupをgit cloneする。  
  * bundle installを実行する。  
- * meetup回数フォルダを作成する(指定回のフォルダがない場合のみ)  
- * ブランチを作成する(git checkout -b)  
+ * 入力したmeetup番号のフォルダを作成する。(未作成の場合のみ)  
+ * mode別空ファイル【1)meetup の場合、index.md 2)reportの場合 report.md】を作成する。(未作成の場合のみ)  
   
 使い方  
 ------  
-./create_kzrb_meetup.sh param1 param2  
-  
-パラメータの解説  
-----------------  
-+   `param1` :  
-    作成するmeetup回を指定する  
- 
-+   `param2` :  
-    作成するページ種別を指定する。1:meetup 1以外:report
-  
-使用例)meetup30のレポートページの場合  
-------  
-./create_kzrb_meetup.sh 30 2
+sh create_kzrb_meetup.sh
