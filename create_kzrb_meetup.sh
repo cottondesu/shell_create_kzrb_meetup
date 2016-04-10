@@ -65,7 +65,7 @@ fi
 
 cd $number
 
-#mode別の空ファイル作成
+#mode別処理
 case "$mode" in
   "1") 
       if [ ! -e index.md ]
@@ -73,6 +73,11 @@ case "$mode" in
           touch index.md
           echo "空の index.md を作成しました。"
       fi
+      echo ""
+      echo "以下のファイルの変更が必要です。"
+      echo "$number/index.md"
+      echo "_layouts/record.html"
+      echo "_layouts/toplevel.html"
       break ;;
   "2") 
       if [ ! -e report.md ]
@@ -80,5 +85,9 @@ case "$mode" in
           touch report.md
           echo "空の report.md を作成しました。"
       fi
+      echo ""
+      echo "以下のファイルの変更が必要です。"
+      echo "$number/index.md"
+      echo "$number/report.md"
       break ;;
 esac
