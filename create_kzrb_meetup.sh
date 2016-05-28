@@ -5,7 +5,7 @@ while :
 do
   echo "以下のどちらかを選択してください。1 or 2"
   echo "1)meetup 2)report"
-  read mode
+  read -r mode
   case "$mode" in
     "1") 
         echo "1)meetup を選択しました。"
@@ -20,9 +20,8 @@ done
 while :
 do
   echo "meetup番号を入力してください。"
-  read number
-  expr "$number" + 1 >/dev/null 2>&1
-  if [ $? -lt 2 ]
+  read -r number
+  if [[ "$number" =~ ^[0-9]+$ ]]
   then
     echo "$number を入力しました。"
     break
@@ -42,52 +41,53 @@ if [ ! -e meetup ]
     exit 1
 fi
 
-cd meetup/
+cd meetup/ || return
 
 bundle install --path vendor/bundle --binstubs .bundle/bin --without livereload
 
 #モードチェック
-if [ $mode -eq 1 ]
+if [ "$mode" -eq 1 ]
   then
     brname=add_meetup$number
   else
     brname=add_report$number
 fi
 
-git checkout -b $brname
+git checkout -b "$brname"
 
 #meetup番号フォルダ存在チェック
-if [ ! -e $number ]
+if [ ! -e "$number" ]
   then
-    mkdir $number
+    mkdir "$number"
     echo "$number フォルダを作成しました。"
 fi
 
-cd $number
+indexFile="$number"$"/index.md"
+reportFile="$number"$"/report.md"
 
 #mode別処理
 case "$mode" in
   "1") 
-      if [ ! -e index.md ]
+      if [ ! -e "$indexFile" ]
         then
-          touch index.md
+          touch "$indexFile"
           echo "空の index.md を作成しました。"
       fi
       echo ""
       echo "以下のファイルの変更が必要です。"
-      echo "$number/index.md"
+      echo "$indexFile"
       echo "_layouts/record.html"
       echo "_layouts/toplevel.html"
-      break ;;
+      ;;
   "2") 
-      if [ ! -e report.md ]
+      if [ ! -e "$reportFile" ]
         then
-          touch report.md
+          touch "$reportFile"
           echo "空の report.md を作成しました。"
       fi
       echo ""
       echo "以下のファイルの変更が必要です。"
-      echo "$number/index.md"
-      echo "$number/report.md"
-      break ;;
+      echo "$indexFile"
+      echo "$reportFile"
+      ;;
 esac
