@@ -1,0 +1,13 @@
+machine:
+  environment:
+    SHUNIT2_HOME: ${HOME}/.shunit2/shunit2-2.1.6
+
+dependencies:
+  pre:
+    - "[ ! -e ~/.shunit2 ] && wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/shunit2/shunit2-2.1.6.tgz && mkdir ~/.shunit2 && tar zxf shunit2-2.1.6.tgz -C ~/.shunit2 || echo 'ready'"
+  cache_directories:
+    - "~/.shunit2"
+
+test:
+  override:
+    - bash test/function_test.sh
