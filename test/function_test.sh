@@ -44,12 +44,12 @@ testIsFileNg(){
 }
 
 testIsFolder(){
-	is_filefolder ../test
+	is_filefolder test
 	assertEquals 0 $?
 }
 
 testIsFolderNg(){
-	is_filefolder test
+	is_filefolder exsample
 	assertEquals 1 $?
 }
 
