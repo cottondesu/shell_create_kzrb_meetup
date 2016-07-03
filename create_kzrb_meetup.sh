@@ -1,93 +1,122 @@
 #!/bin/bash
 
 #モード選択
-while :
-do
-  echo "以下のどちらかを選択してください。1 or 2"
-  echo "1)meetup 2)report"
-  read mode
-  case "$mode" in
-    "1") 
-        echo "1)meetup を選択しました。"
-        break ;;
-    "2") 
-        echo "2)report を選択しました。"
-        break ;;
-  esac
-done
-
-#meetup番号入力
-while :
-do
-  echo "meetup番号を入力してください。"
-  read number
-  expr "$number" + 1 >/dev/null 2>&1
-  if [ $? -lt 2 ]
-  then
-    echo "$number を入力しました。"
-    break
+select_mode() {
+  if [[ "$1" =~ ^[1-2] ]]; then
+    return 0
   else
-    echo "数値以外が入力されています。数値を入力してください。"
+    return 1
   fi
-done
+}
 
-rm -rf meetup/
+#meetup番号入力  
+input_meetupnum(){
+  if [[ "$1" =~ ^[0-9]+$ ]]; then
+    return 0
+  else
+    return 1
+  fi  
+}
 
-git clone https://github.com/kanazawarb/meetup.git
+#フォルダ存在チェック
+is_filefolder(){
+  if [ ! -e "$1" ]; then
+    return 1
+  else
+    return 0
+  fi  
+}
 
-#meetupフォルダ存在チェック
-if [ ! -e meetup ]
-  then
+if [ "$0" = "${BASH_SOURCE:-$0}" ]; then
+  while :
+  do
+    echo "以下のどちらかを選択してください。1 or 2"
+    echo "1)meetup 2)report"
+    read -r mode
+    select_mode "$mode"
+    if [ $? -eq 0 ]; then
+      case "$mode" in
+        "1") 
+          echo "1)meetup を選択しました。"
+          ;;
+        "2") 
+          echo "2)report を選択しました。"
+          ;;
+      esac
+      break
+    fi
+  done
+
+  while :
+  do
+    echo "meetup番号を入力してください。"
+    read -r number
+    input_meetupnum "$number"
+    if [ $? -eq 0 ]; then
+      echo "$number を入力しました。"
+      break
+    else
+      echo "数値以外が入力されています。数値を入力してください。"
+    fi
+  done
+
+  rm -rf meetup/
+
+  git clone https://github.com/kanazawarb/meetup.git
+
+  is_filefolder "meetup"
+  if [ $? -eq 1 ]; then
     echo "meetup の git clone に失敗しました。"
     exit 1
+  fi
+
+  cd meetup/ || return
+
+  bundle install --path vendor/bundle --binstubs .bundle/bin --without livereload
+
+  #モードチェック
+  if [ "$mode" -eq 1 ]
+    then
+      brname=add_meetup$number
+    else
+      brname=add_report$number
+  fi  
+
+  git checkout -b "$brname"
+
+  is_filefolder "$number"
+  if [ $? -eq 1 ]; then
+      mkdir "$number"
+      echo "$number フォルダを作成しました。"
+  fi
+
+  indexFile="$number"$"/index.md"
+  reportFile="$number"$"/report.md"
+
+  #mode別処理
+  case "$mode" in
+    "1") 
+        is_filefolder "$indexFile"
+        if [ $? -eq 1 ]; then
+            touch "$indexFile"
+            echo "空の index.md を作成しました。"
+        fi
+        echo ""
+        echo "以下のファイルの変更が必要です。"
+        echo "$indexFile"
+        echo "_layouts/record.html"
+        echo "_layouts/toplevel.html"
+        ;;
+    "2") 
+        is_filefolder "$reportFile"
+        if [ $? -eq 1 ]; then
+            touch "$reportFile"
+            echo "空の report.md を作成しました。"
+        fi
+        echo ""
+        echo "以下のファイルの変更が必要です。"
+        echo "$indexFile"
+        echo "$reportFile"
+        ;;
+  esac
 fi
-
-cd meetup/
-
-bundle install --path vendor/bundle --binstubs .bundle/bin --without livereload
-
-#モードチェック
-if [ $mode -eq 1 ]
-  then
-    brname=add_meetup$number
-  else
-    brname=add_report$number
-fi
-
-git checkout -b $brname
-
-#meetup番号フォルダ存在チェック
-if [ ! -e $number ]
-  then
-    mkdir $number
-    echo "$number フォルダを作成しました。"
-fi
-
-cd $number
-
-#mode別処理
-case "$mode" in
-  "1") 
-      if [ ! -e index.md ]
-        then
-          touch index.md
-          echo "空の index.md を作成しました。"
-      fi
-      echo ""
-      echo "以下のファイルの変更が必要です。"
-      echo "$number/index.md"
-      echo "_layouts/record.html"
-      echo "_layouts/toplevel.html"
-      break ;;
-  "2") 
-      if [ ! -e report.md ]
-        then
-          touch report.md
-          echo "空の report.md を作成しました。"
-      fi
-      echo ""
-      echo "以下のファイルの変更が必要です。"
-      echo "$number/index.md"
-      echo "$number/report.md"
-      break ;;
-esac
