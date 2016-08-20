@@ -15,4 +15,34 @@ create_kzrb_meetup.sh
   
 使い方  
 ------  
-sh create_kzrb_meetup.sh
+sh create_kzrb_meetup.sh  
+  
+  
+テストコードについて  
+------  
+testフォルダに格納されているテスト用シェルスクリプトは  
+Githubにpushした際にCircleCIで実行されます。  
+  
+ローカル環境でテストコードを実行させたい場合は事前に  
+shUnit2を実行端末にダウンロードしてある必要があります。  
+  
+手順は以下の通りです。  
+  
+以下のサイトから開く  
+[https://code.google.com/archive/p/shunit2/](https://code.google.com/archive/p/shunit2/)
+  
+Downloadsからshunit2-2.1.6.tgzをダウンロードします。  
+ターミナルから以下のコマンドを実行しフォルダを作成、  
+ダウンロードしたtgzファイルを展開します。  
+  
+$ mkdir ~/.shunit2  
+$ tar zxf shunit2-2.1.6.tgz -C ~/.shunit2  
+  
+以下のように環境変数(bash)を設定します。  
+  
+$ echo 'export SHUNIT2_HOME=$HOME/.shunit2/shunit2-2.1.6' >> ~/.bash_profile  
+$ . ~/.bash_profile  
+  
+テストコードを実行します。  
+  
+$ sh test/function_test.sh  
