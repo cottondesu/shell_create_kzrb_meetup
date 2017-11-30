@@ -9,13 +9,13 @@ select_mode() {
   fi
 }
 
-#meetup番号入力  
+#meetup番号入力
 input_meetupnum(){
   if [[ "$1" =~ ^[0-9]+$ ]]; then
     return 0
   else
     return 1
-  fi  
+  fi
 }
 
 #フォルダ存在チェック
@@ -24,7 +24,7 @@ is_filefolder(){
     return 1
   else
     return 0
-  fi  
+  fi
 }
 
 if [ "$0" = "${BASH_SOURCE:-$0}" ]; then
@@ -36,10 +36,10 @@ if [ "$0" = "${BASH_SOURCE:-$0}" ]; then
     select_mode "$mode"
     if [ $? -eq 0 ]; then
       case "$mode" in
-        "1") 
+        "1")
           echo "1)meetup を選択しました。"
           ;;
-        "2") 
+        "2")
           echo "2)report を選択しました。"
           ;;
       esac
@@ -80,7 +80,7 @@ if [ "$0" = "${BASH_SOURCE:-$0}" ]; then
       brname=add_meetup$number
     else
       brname=add_report$number
-  fi  
+  fi
 
   git checkout -b "$brname"
 
@@ -95,23 +95,29 @@ if [ "$0" = "${BASH_SOURCE:-$0}" ]; then
 
   #mode別処理
   case "$mode" in
-    "1") 
+    "1")
         is_filefolder "$indexFile"
         if [ $? -eq 1 ]; then
             touch "$indexFile"
             echo "空の index.md を作成しました。"
         fi
+        is_filefolder "$reportFile"
+        if [ $? -eq 1 ]; then
+            cp ../template/report.md "$number/"
+            echo "テンプレートの report.md をコピーしました。"
+        fi
         echo ""
         echo "以下のファイルの変更が必要です。"
         echo "$indexFile"
+        echo "$reportFile"$" meetup番号のみ修正すること"
         echo "_layouts/record.html"
         echo "_layouts/toplevel.html"
         ;;
-    "2") 
+    "2")
         is_filefolder "$reportFile"
         if [ $? -eq 1 ]; then
-            touch "$reportFile"
-            echo "空の report.md を作成しました。"
+          cp ../template/report.md "$number/"
+          echo "テンプレートの report.md をコピーしました。"
         fi
         echo ""
         echo "以下のファイルの変更が必要です。"
