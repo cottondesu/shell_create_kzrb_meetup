@@ -53,5 +53,15 @@ testIsFolderNg(){
 	assertEquals 1 $?
 }
 
+testIsTemplateFolder(){
+	is_filefolder template
+	assertEquals 0 $?
+}
+
+testIsTmpReport(){
+	is_filefolder template/report.md
+	assertEquals 0 $?
+}
+
 # shellcheck source=$HOME/.shunit2/shunit2-2.1.6/src/shunit2
 . "$SHUNIT2_HOME/src/shunit2"
