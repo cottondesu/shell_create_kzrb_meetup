@@ -1,0 +1,16 @@
+name: shunit2 CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: "[ ! -e ~/.shunit2 ] && wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/shunit2/shunit2-2.1.6.tgz && mkdir ~/.shunit2 && tar zxf shunit2-2.1.6.tgz -C ~/.shunit2 || echo 'ready'"
+    - run: bash test/function_test.sh
