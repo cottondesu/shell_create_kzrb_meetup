@@ -16,6 +16,7 @@ jobs:
     - run: ls -la ~/.shunit2
     - run: ls -la ~/.shunit2/shunit2-2.1.6
     - run: ls -la ~/.shunit2/shunit2-2.1.6/src/
+    - run: ls -la ~/.shunit2/shunit2-2.1.6/src/shunit2
     - run: ls -la
     - run: pwd
     - run: bash test/function_test.sh
