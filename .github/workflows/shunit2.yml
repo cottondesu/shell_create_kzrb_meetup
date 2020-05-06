@@ -21,4 +21,4 @@ jobs:
     - run: pwd
     - run: bash test/function_test.sh
     env:
-      SHUNIT2_HOME: ~/.shunit2/shunit2-2.1.6
+      SHUNIT2_HOME: /home/runner/.shunit2/shunit2-2.1.6
