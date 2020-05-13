@@ -63,5 +63,10 @@ testIsTmpReport(){
 	assertEquals 0 $?
 }
 
+testInputMeetupNumA(){
+	input_meetupnum a
+	assertEquals 0 $?
+}
+
 # shellcheck source=$HOME/.shunit2/shunit2-2.1.6/src/shunit2
 . "$SHUNIT2_HOME/src/shunit2"
